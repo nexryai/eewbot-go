@@ -44,8 +44,12 @@ type MisskeyNote struct {
 	FileIds    []string `json:"fileIds"`
 }
 
-type MisskeyDriveFile struct {
+type MisskeyDriveUploadForm struct {
 	InstanceHost string
 	Token        string
 	Data         []byte
+}
+
+type MisskeyDriveFile struct {
+	FileID string `json:"id"`
 }

@@ -14,7 +14,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	data := notify.MisskeyDriveFile{
+	data := notify.MisskeyDriveUploadForm{
 		InstanceHost: "beta.romneko.net",
 		Token:        os.Getenv("MISSKEY_TOKEN"),
 		Data:         *imageData,
