@@ -12,8 +12,7 @@ WORKDIR /app
 
 RUN sed -i.bak -r 's!(deb|deb-src) \S+!\1 http://ftp.riken.jp/Linux/ubuntu/!' /etc/apt/sources.list\
  && apt update \
- && apt install -y python3 python3-pip python3-dev curl tini xvfb imagemagick wget unzip \
- && pip3 install --no-cache -r requirements.txt \
+ && apt install -y curl tini xvfb imagemagick wget unzip \
  && groupadd -g 987 app \
  && useradd -d /app -s /bin/sh -u 987 -g app app \
  && apt purge -y python3-dev \
