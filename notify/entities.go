@@ -37,17 +37,22 @@ type DiscordHook struct {
 
 // Misskey
 type MisskeyNote struct {
-	Instance   string
-	Token      string   `json:"i"`
-	Text       string   `json:"text"`
-	Visibility string   `json:"visibility"`
-	FileIds    []string `json:"fileIds"`
+	InstanceHost string
+	Token        string   `json:"i"`
+	Text         string   `json:"text"`
+	Visibility   string   `json:"visibility"`
+	FileIds      []string `json:"fileIds"`
+	LocalOnly    bool     `json:"localOnly"`
 }
 
 type MisskeyDriveUploadForm struct {
 	InstanceHost string
 	Token        string
 	Data         []byte
+}
+
+type MisskeyDriveUploadResp struct {
+	FileID string `json:"id"`
 }
 
 type MisskeyDriveFile struct {
