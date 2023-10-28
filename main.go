@@ -49,7 +49,7 @@ func main() {
 			InstanceHost: "miski.st",
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Text:         text,
-			LocalOnly:    true,
+			LocalOnly:    false,
 			Visibility:   "public",
 			FileIds:      []string{driveApiResp.FileID},
 		}
