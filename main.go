@@ -53,6 +53,45 @@ func main() {
 			Visibility:   "public",
 			FileIds:      []string{driveApiResp.FileID},
 		}
+
+		err = notify.PostToMisskey(note)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+	} else if os.Getenv("EEW_DEBUGMODE") == "1" {
+		imageData, err := xvfb.TakeScreenshotOfXvfb()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		data := notify.MisskeyDriveUploadForm{
+			InstanceHost: "miski.st",
+			Token:        os.Getenv("MISSKEY_TOKEN"),
+			Data:         *imageData,
+		}
+
+		driveApiResp, err := notify.UploadToMisskeyDrive(data)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Println(driveApiResp.FileID)
+
+		text := "Botは起動しました。"
+
+		note := notify.MisskeyNote{
+			InstanceHost: "miski.st",
+			Token:        os.Getenv("MISSKEY_TOKEN"),
+			Text:         text,
+			LocalOnly:    true,
+			Visibility:   "home",
+			FileIds:      []string{driveApiResp.FileID},
+		}
+
 		err = notify.PostToMisskey(note)
 		if err != nil {
 			fmt.Println(err)
