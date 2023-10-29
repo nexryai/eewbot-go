@@ -10,8 +10,8 @@ import (
 	"net/http"
 )
 
-func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveUploadResp, error) {
-	var apiResp MisskeyDriveUploadResp
+func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, error) {
+	var apiResp MisskeyDriveFile
 
 	id := uuid.New()
 	apiEndpoint := fmt.Sprintf("https://%s/api/drive/files/create", content.InstanceHost)

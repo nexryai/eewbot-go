@@ -1,8 +1,8 @@
 package quake
 
 type Equake struct {
-	Id            int64
-	ReportNum     int16
+	Id            uint64
+	ReportNum     uint16
 	DispIntensity string
 	Place         string
 }

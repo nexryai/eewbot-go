@@ -51,10 +51,7 @@ type MisskeyDriveUploadForm struct {
 	Data         []byte
 }
 
-type MisskeyDriveUploadResp struct {
-	FileID string `json:"id"`
-}
-
 type MisskeyDriveFile struct {
 	FileID string `json:"id"`
+	Url    string `json:"url"`
 }
