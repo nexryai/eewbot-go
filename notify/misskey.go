@@ -22,6 +22,7 @@ func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, err
 	writer := multipart.NewWriter(requestBody)
 	defer writer.Close()
 
+	// v12系だとなぜかGoのコードからPOSTすると500になるのでcurlを使うモード
 	if os.Getenv("USE_CURL") == "1" {
 		curlCmd := exec.Command("curl",
 			"-s",

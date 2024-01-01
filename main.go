@@ -90,6 +90,10 @@ func main() {
 				q.DispIntensity)
 
 		} else {
+			if os.Getenv("DISCORD_SILENT") == "1" {
+				os.Exit(0)
+			}
+
 			color = 0xffc000
 
 			// 本文
