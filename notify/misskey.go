@@ -24,6 +24,7 @@ func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, err
 
 	if os.Getenv("USE_CURL") == "1" {
 		curlCmd := exec.Command("curl",
+			"-s",
 			"-X", "POST",
 			"-H", "Content-Type: multipart/form-data",
 			"-F", fmt.Sprintf("file=@-"),
