@@ -18,7 +18,7 @@ func main() {
 		}
 
 		data := notify.MisskeyDriveUploadForm{
-			InstanceHost: "miski.st",
+			InstanceHost: "social.sda1.net",
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Data:         *imageData,
 		}
@@ -59,7 +59,7 @@ func main() {
 		}
 
 		note := notify.MisskeyNote{
-			InstanceHost: "miski.st",
+			InstanceHost: "social.sda1.net",
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Text:         text,
 			LocalOnly:    false,
@@ -132,7 +132,7 @@ func main() {
 		}
 
 		data := notify.MisskeyDriveUploadForm{
-			InstanceHost: "miski.st",
+			InstanceHost: "social.sda1.net",
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Data:         *imageData,
 		}
@@ -148,7 +148,7 @@ func main() {
 		text := "Botは起動しました。"
 
 		note := notify.MisskeyNote{
-			InstanceHost: "miski.st",
+			InstanceHost: "social.sda1.net",
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Text:         text,
 			LocalOnly:    true,
