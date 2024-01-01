@@ -43,6 +43,7 @@ func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, err
 		fmt.Println(string(output))
 
 		if err := json.Unmarshal(output, &apiResp); err != nil {
+			fmt.Println("Failed to unmarshal JSON:", err)
 			return apiResp, err
 		}
 
