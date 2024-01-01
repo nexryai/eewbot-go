@@ -8,6 +8,8 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"os"
+	"os/exec"
 )
 
 func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, error) {
@@ -20,6 +22,32 @@ func UploadToMisskeyDrive(content MisskeyDriveUploadForm) (MisskeyDriveFile, err
 	writer := multipart.NewWriter(requestBody)
 	defer writer.Close()
 
+	if os.Getenv("USE_CURL") == "1" {
+		curlCmd := exec.Command("curl",
+			"-X", "POST",
+			"-H", "Content-Type: multipart/form-data",
+			"-F", fmt.Sprintf("file=@-"),
+			"-F", fmt.Sprintf("i=%s", content.Token),
+			apiEndpoint,
+		)
+
+		curlCmd.Stdin = bytes.NewReader(content.Data)
+
+		output, err := curlCmd.CombinedOutput()
+		if err != nil {
+			fmt.Println("Error:", err)
+			return MisskeyDriveFile{}, err
+		}
+
+		// Print the output of the command
+		fmt.Println(string(output))
+
+		if err := json.Unmarshal(output, &apiResp); err != nil {
+			return apiResp, err
+		}
+
+		return apiResp, nil
+	}
 	// ファイルフィールドを追加
 	fileField, err := writer.CreateFormFile("file", id.String()+".png")
 	if err != nil {
