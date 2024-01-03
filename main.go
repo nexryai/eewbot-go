@@ -7,6 +7,7 @@ import (
 	"github.com/nexryai/eewbot-go/xvfb"
 	"os"
 	"strconv"
+	"sync"
 )
 
 func main() {
@@ -44,89 +45,103 @@ func main() {
 			Place:         os.Getenv("EEW_PLACE"),
 		}
 
+		var wg sync.WaitGroup
+
 		// Misskeyに通知
-		var text string
-		if quake.IsEmergency(q.DispIntensity) {
-			text = fmt.Sprintf("<center>$[x2 ⚠️緊急地震速報(EEW) 第%d報⚠️]</center>\n\n震源: **%s**\n$[fg 最大震度: 震度**%s**]",
-				q.ReportNum,
-				q.Place,
-				q.DispIntensity)
-		} else {
-			text = fmt.Sprintf("<center>**⚠️緊急地震速報(EEW) 第%d報⚠️**</center>\n\n震源: **%s**\n最大震度: 震度**%s**",
-				q.ReportNum,
-				q.Place,
-				q.DispIntensity)
-		}
-
-		note := notify.MisskeyNote{
-			InstanceHost: "social.sda1.net",
-			Token:        os.Getenv("MISSKEY_TOKEN"),
-			Text:         text,
-			LocalOnly:    false,
-			Visibility:   "public",
-			FileIds:      []string{driveApiResp.FileID},
-		}
-
-		err = notify.PostToMisskey(note)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		// Discordに通知
-		var color int
-		var discordEmbedTitle string
-		var discordEmbedMessage string
-
-		if quake.IsEmergency(q.DispIntensity) {
-			color = 0xD50000
-
-			// 本文
-			discordEmbedTitle = fmt.Sprintf("最大震度%s 緊急地震速報第%d報 強い揺れに警戒",
-				q.DispIntensity,
-				q.ReportNum)
-
-			discordEmbedMessage = fmt.Sprintf("強い揺れに警戒してください。%sを震源とする最大震度%sの地震が発生しました。落ち着いて行動してください。",
-				q.Place,
-				q.DispIntensity)
-
-		} else {
-			if os.Getenv("DISCORD_SILENT") == "1" {
-				os.Exit(0)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			var text string
+			if quake.IsEmergency(q.DispIntensity) {
+				text = fmt.Sprintf("<center>$[x2 ⚠️緊急地震速報(EEW) 第%d報⚠️]</center>\n\n震源: **%s**\n$[fg 最大震度: 震度**%s**]",
+					q.ReportNum,
+					q.Place,
+					q.DispIntensity)
+			} else {
+				text = fmt.Sprintf("<center>**⚠️緊急地震速報(EEW) 第%d報⚠️**</center>\n\n震源: **%s**\n最大震度: 震度**%s**",
+					q.ReportNum,
+					q.Place,
+					q.DispIntensity)
 			}
 
-			color = 0xffc000
+			note := notify.MisskeyNote{
+				InstanceHost: "social.sda1.net",
+				Token:        os.Getenv("MISSKEY_TOKEN"),
+				Text:         text,
+				LocalOnly:    false,
+				Visibility:   "public",
+				FileIds:      []string{driveApiResp.FileID},
+			}
 
-			// 本文
-			discordEmbedTitle = fmt.Sprintf("最大震度%s 緊急地震速報第%d報",
+			err = notify.PostToMisskey(note)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}()
+
+		// Discordに通知
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			var color int
+			var discordEmbedTitle string
+			var discordEmbedMessage string
+
+			if quake.IsEmergency(q.DispIntensity) {
+				color = 0xD50000
+
+				// 本文
+				discordEmbedTitle = fmt.Sprintf("最大震度%s 緊急地震速報第%d報 強い揺れに警戒",
+					q.DispIntensity,
+					q.ReportNum)
+
+				discordEmbedMessage = fmt.Sprintf("強い揺れに警戒してください。%sを震源とする最大震度%sの地震が発生しました。落ち着いて行動してください。",
+					q.Place,
+					q.DispIntensity)
+
+			} else {
+				if os.Getenv("DISCORD_SILENT") == "1" {
+					return
+				}
+
+				color = 0xffc000
+
+				// 本文
+				discordEmbedTitle = fmt.Sprintf("最大震度%s 緊急地震速報第%d報",
+					q.DispIntensity,
+					q.ReportNum)
+
+				discordEmbedMessage = fmt.Sprintf("%sを震源とする最大震度%sの地震が発生しました。",
+					q.Place,
+					q.DispIntensity)
+			}
+
+			var discordNotify notify.DiscordHook
+			discordNotify.Username = "EEW Bot"
+			discordNotify.Content = fmt.Sprintf("最大震度%s 第%d報 緊急地震速報",
 				q.DispIntensity,
 				q.ReportNum)
-
-			discordEmbedMessage = fmt.Sprintf("%sを震源とする最大震度%sの地震が発生しました。",
-				q.Place,
-				q.DispIntensity)
-		}
-
-		var discordNotify notify.DiscordHook
-		discordNotify.Username = "EEW Bot"
-		discordNotify.Content = "緊急地震速報を受信。"
-		discordNotify.Embeds = []notify.DiscordEmbed{
-			notify.DiscordEmbed{
-				Title:  discordEmbedTitle,
-				Desc:   discordEmbedMessage,
-				Color:  color,
-				Author: notify.DiscordAuthor{Name: "eewbot-go"},
-				Image:  notify.DiscordImg{URL: driveApiResp.Url},
-				Fields: []notify.DiscordField{
-					notify.DiscordField{Name: "震源", Value: q.Place, Inline: true},
-					notify.DiscordField{Name: "最大震度", Value: q.DispIntensity, Inline: true},
+			discordNotify.Embeds = []notify.DiscordEmbed{
+				notify.DiscordEmbed{
+					Title:  discordEmbedTitle,
+					Desc:   discordEmbedMessage,
+					Color:  color,
+					Author: notify.DiscordAuthor{Name: "eewbot-go"},
+					Image:  notify.DiscordImg{URL: driveApiResp.Url},
+					Fields: []notify.DiscordField{
+						notify.DiscordField{Name: "震源", Value: q.Place, Inline: true},
+						notify.DiscordField{Name: "最大震度", Value: q.DispIntensity, Inline: true},
+					},
 				},
-			},
-		}
+			}
 
-		err = notify.NotifyToDiscord(discordNotify)
-		if err != nil {
-			os.Exit(1)
-		}
+			err = notify.NotifyToDiscord(discordNotify)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}()
+
+		wg.Wait()
 
 	} else if os.Getenv("EEW_DEBUGMODE") == "1" {
 		imageData, err := xvfb.TakeScreenshotOfXvfb()
