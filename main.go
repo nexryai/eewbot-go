@@ -95,7 +95,7 @@ func main() {
 					q.DispIntensity,
 					q.ReportNum)
 
-				discordEmbedMessage = fmt.Sprintf("強い揺れに警戒してください。%sを震源とする最大震度%sの地震が発生しました。落ち着いて行動してください。",
+				discordEmbedMessage = fmt.Sprintf("強い揺れに警戒。%sを震源とする最大震度%sの地震が発生しました。",
 					q.Place,
 					q.DispIntensity)
 
@@ -118,8 +118,9 @@ func main() {
 
 			var discordNotify notify.DiscordHook
 			discordNotify.Username = "EEW Bot"
-			discordNotify.Content = fmt.Sprintf("最大震度%s 第%d報 緊急地震速報",
+			discordNotify.Content = fmt.Sprintf("最大震度%s %s震源 EEW第%d報",
 				q.DispIntensity,
+				q.Place,
 				q.ReportNum)
 			discordNotify.Embeds = []notify.DiscordEmbed{
 				notify.DiscordEmbed{
