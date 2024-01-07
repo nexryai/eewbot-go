@@ -53,7 +53,7 @@ func main() {
 			defer wg.Done()
 			var text string
 			if quake.IsEmergency(q.DispIntensity) {
-				text = fmt.Sprintf("<center>$[x2 ⚠️緊急地震速報(EEW) 第%d報⚠️]</center>\n\n震源: **%s**\n$[fg 最大震度: 震度**%s**]",
+				text = fmt.Sprintf("<center>$[bg.color=ff0000 ⚠️$[fg.color=fff **緊急地震速報(警報)** 第%d報]⚠️]</center>\n\n震源: **%s**\n$[fg 最大震度: 震度**%s**]",
 					q.ReportNum,
 					q.Place,
 					q.DispIntensity)
