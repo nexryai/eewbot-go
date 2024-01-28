@@ -10,14 +10,14 @@ FROM ubuntu:latest
 WORKDIR /app
 
 
-RUN sed -i.bak -r 's!(deb|deb-src) \S+!\1 http://ftp.riken.jp/Linux/ubuntu/!' /etc/apt/sources.list\
+RUN sed -i.bak -r 's!(deb|deb-src) \S+!\1 https://mirror-cdn.xtom.com/ubuntu/!' /etc/apt/sources.list \
  && apt update \
  && apt install -y curl tini xvfb graphicsmagick-imagemagick-compat wget unzip ca-certificates \
  && groupadd -g 987 app \
  && useradd -d /app -s /bin/sh -u 987 -g app app \
- && wget https://github.com/ingen084/KyoshinEewViewerIngen/releases/latest/download/KyoshinEewViewer-ubuntu-latest.zip \
- && unzip KyoshinEewViewer-ubuntu-latest.zip \
- && rm -f KyoshinEewViewer-ubuntu-latest.zip \
+ && wget https://github.com/ingen084/KyoshinEewViewerIngen/releases/latest/download/KyoshinEewViewer-ubuntu-x64.zip \
+ && unzip KyoshinEewViewer-ubuntu-x64.zip \
+ && rm -f KyoshinEewViewer-ubuntu-x64.zip \
  && apt purge -y wget unzip \
  && apt autoremove --purge -y \
  && apt clean \
