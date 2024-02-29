@@ -9,7 +9,7 @@ services:
     environment:
       - MISSKEY_TOKEN=TOKEN
       - DISCORD_WEBHOOK=WEBHOOKURL
-      # For Misskey v12 Servers
+      # For Misskey v12 Servers（hotfix）
       - USE_CURL=1
       # 5弱以上じゃないとDiscordに通知しない設定
       - DISCORD_SILENT=1
