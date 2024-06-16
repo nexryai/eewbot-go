@@ -5,6 +5,7 @@ on:
       - 'main'
 jobs:
   docker:
+    name: Build and push to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
