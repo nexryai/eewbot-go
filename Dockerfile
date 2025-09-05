@@ -5,20 +5,18 @@ COPY . ./
 
 ENV CGO_ENABLED=0
 
-RUN apt-get update \
- && apt-get install -y ca-certificates \
+RUN sed -i.bak -r 's!(deb|deb-src) \S+!\1 https://mirrors.xtom.com.hk/ubuntu/!' /etc/apt/sources.list \
  && apt-get update \
- && apt-get install -y golang \
+ && apt-get install -y ca-certificates golang \
  && go build -trimpath -o eewbot main.go
 
 FROM ubuntu:latest
 WORKDIR /app
 
 
-RUN apt-get update \
- && apt-get install -y ca-certificates \
+RUN sed -i.bak -r 's!(deb|deb-src) \S+!\1 https://mirrors.xtom.com.hk/ubuntu/!' /etc/apt/sources.list \
  && apt-get update \
- && apt-get install -y curl tini xvfb graphicsmagick-imagemagick-compat wget unzip \
+ && apt-get install -y ca-certificates curl tini xvfb graphicsmagick-imagemagick-compat wget unzip \
  && groupadd -g 987 app \
  && useradd -d /app -s /bin/sh -u 987 -g app app \
  && wget https://github.com/ingen084/KyoshinEewViewerIngen/releases/latest/download/KyoshinEewViewer-ubuntu-x64.zip \
