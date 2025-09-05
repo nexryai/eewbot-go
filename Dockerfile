@@ -3,12 +3,13 @@ WORKDIR /build
 
 COPY . ./
 
+ENV CGO_ENABLED=0
+
 RUN apt-get update \
  && apt-get install -y ca-certificates \
- && sed -i.bak -r 's!(deb|deb-src) \S+!\1 https://mirrors.xtom.com.hk/ubuntu/!' /etc/apt/sources.list \
  && apt-get update \
  && apt-get install -y golang \
- && go build -ldflags="-s -w" -trimpath -o eewbot main.go
+ && go build -trimpath -o eewbot main.go
 
 FROM ubuntu:latest
 WORKDIR /app
@@ -16,7 +17,6 @@ WORKDIR /app
 
 RUN apt-get update \
  && apt-get install -y ca-certificates \
- && sed -i.bak -r 's!(deb|deb-src) \S+!\1 https://mirrors.xtom.com.hk/ubuntu/!' /etc/apt/sources.list \
  && apt-get update \
  && apt-get install -y curl tini xvfb graphicsmagick-imagemagick-compat wget unzip \
  && groupadd -g 987 app \
