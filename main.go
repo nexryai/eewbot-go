@@ -19,7 +19,7 @@ func main() {
 		}
 
 		data := notify.MisskeyDriveUploadForm{
-			InstanceHost: "social.sda1.net",
+			InstanceHost: os.Getenv("MISSKEY_HOST"),
 			Token:        os.Getenv("MISSKEY_TOKEN"),
 			Data:         *imageData,
 		}
